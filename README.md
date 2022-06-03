@@ -8,3 +8,8 @@ an unofficial Api.
 ### Usage:
 
 - To build it yourself: `yarn run build` in the root repository
+
+### Images:
+
+- ![alt text](./screenshots/examp.png)
+- ![alt text](./screenshots/examp2.png)

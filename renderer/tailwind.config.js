@@ -16,6 +16,7 @@ module.exports = {
     extend: {
       colors: {
         eksisozluk: "#2d2d2d",
+        eksiyellow: " #81c14b",
       },
     },
   },

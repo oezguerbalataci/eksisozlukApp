@@ -2,10 +2,16 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import Entry from "./Entry";
-import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import {
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  RedditSquareFilled,
+} from "@ant-design/icons";
+import { ipcRenderer } from "electron/renderer";
 
 const Content = ({
   isMoreClicked,
+  setMainPage,
   setIsMoreClicked,
   baslikToView,
   setIsLoading,
@@ -16,14 +22,6 @@ const Content = ({
   setBugunClicked,
   mainPage,
 }) => {
-  const login = () => {
-    window.open(
-      "https://github.com",
-      "_blank",
-      "top=500,left=200,frame=false,nodeIntegration=no"
-    );
-  };
-
   const [selected, setSelected] = useState(0);
   const handleMore = () => {
     setIsLoading(true);
@@ -41,26 +39,78 @@ const Content = ({
         `https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}?a=dailynice`
       )
       .then((res) => {
-        setBaslikToView(res.data);
-        setIsLoading(false);
+        if (res.data) {
+          setBaslikToView(res.data);
+          setIsLoading(false);
+        }
       });
 
     setBugunClicked(!bugunClicked);
     setClicked(false);
   };
 
+  const handleSukelaClick = () => {
+    setIsLoading(true);
+    if (!clicked) {
+      axios
+        .get(
+          `https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}?a=nice`
+        )
+        .then((res) => {
+          if (res.data) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
+        })
+        .catch((err) => {});
+    } else {
+      axios
+        .get(`https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}`)
+        .then((res) => {
+          if (res.data) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    setBugunClicked(false);
+    setClicked(!clicked);
+  };
+
   const handleOnChange = (e) => {
     setIsLoading(true);
-    axios
-      .get(
-        `https://ekssi.herokuapp.com/api/baslik/${
-          baslikToView.slug
-        }?a=popular&p=${Number(e.target.value) + 1}`
-      )
-      .then((res) => {
-        setBaslikToView(res.data);
-        setIsLoading(false);
-      });
+    if (isMoreClicked) {
+      axios
+        .get(
+          `https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}?p=${
+            Number(e.target.value) + 1
+          }`
+        )
+        .then((res) => {
+          if (res.data) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .get(
+          `https://ekssi.herokuapp.com/api/baslik/${
+            baslikToView.slug
+          }?a=popular&p=${Number(e.target.value) + 1}`
+        )
+        .then((res) => {
+          setBaslikToView(res.data);
+          setIsLoading(false);
+        });
+    }
   };
 
   const lastPageClick = () => {
@@ -71,8 +121,10 @@ const Content = ({
           `https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}?p=${baslikToView.total_page}`
         )
         .then((res) => {
-          setBaslikToView(res.data);
-          setIsLoading(false);
+          if (res.data) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
         });
     } else {
       axios
@@ -80,8 +132,10 @@ const Content = ({
           `https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}?a=popular&p=${baslikToView.total_page}`
         )
         .then((res) => {
-          setBaslikToView(res.data);
-          setIsLoading(false);
+          if (res.data) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
         });
     }
   };
@@ -96,8 +150,10 @@ const Content = ({
           }`
         )
         .then((res) => {
-          setBaslikToView(res.data);
-          setIsLoading(false);
+          if (res.data) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
         });
     } else {
       axios
@@ -107,38 +163,14 @@ const Content = ({
           }?a=popular&p=${baslikToView.current_page - 1}`
         )
         .then((res) => {
-          setBaslikToView(res.data);
-          setIsLoading(false);
+          if (res.data) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
         });
     }
   };
-  const handleSukelaClick = () => {
-    setIsLoading(true);
-    if (!clicked) {
-      axios
-        .get(
-          `https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}?a=nice`
-        )
-        .then((res) => {
-          setBaslikToView(res.data);
-          setIsLoading(false);
-        })
-        .catch((err) => {});
-    } else {
-      axios
-        .get(`https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}`)
-        .then((res) => {
-          setBaslikToView(res.data);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
 
-    setBugunClicked(false);
-    setClicked(!clicked);
-  };
   const handleNextClick = () => {
     setIsLoading(true);
     if (isMoreClicked) {
@@ -149,8 +181,10 @@ const Content = ({
           }`
         )
         .then((res) => {
-          setBaslikToView(res.data);
-          setIsLoading(false);
+          if (res.status === 200) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
         });
     } else {
       axios
@@ -160,8 +194,10 @@ const Content = ({
           }?a=popular&p=${baslikToView.current_page + 1}`
         )
         .then((res) => {
-          setBaslikToView(res.data);
-          setIsLoading(false);
+          if (res.data) {
+            setBaslikToView(res.data);
+            setIsLoading(false);
+          }
         });
     }
   };
@@ -173,13 +209,15 @@ const Content = ({
         `https://ekssi.herokuapp.com/api/baslik/${baslikToView.slug}?a=popular&p=${baslikToView.current_page}`
       )
       .then((res) => {
-        setBaslikToView(res.data);
-        setIsLoading(false);
+        if (res.data) {
+          setBaslikToView(res.data);
+          setIsLoading(false);
+        }
       });
   };
 
   return (
-    <div className=" rounded w-full">
+    <div className=" rounded w-full ">
       <h1 className="font-bold mb-8 text-xl text-center">
         {baslikToView.title}
       </h1>
@@ -213,38 +251,35 @@ const Content = ({
         <div className="flex items-center space-x-2">
           {baslikToView.current_page > 1 && (
             <button
-              className="border border-gray-200 rounded w-10 hover:bg-gray-200 "
+              className="h-8 w-12 border border-gray-200 hover:bg-gray-200 rounded"
               onClick={handlePrevClick}
             >
               <DoubleLeftOutlined />
             </button>
           )}
-          <form className="flex items-center space-x-2">
-            <select
-              onChange={handleOnChange}
-              id="pages"
-              className="pt-1 bg-gray-100  border border-gray-200 rounded focus:bg-white focus:border-gray-500"
-              defaultValue={baslikToView.current_page - 1}
-            >
-              {Array.from(Array(baslikToView.total_page).keys()).map((page) => (
-                <option key={page} value={page}>
-                  {page + 1}
-                </option>
-              ))}
-            </select>
-          </form>
+          <select
+            onChange={handleOnChange}
+            className="h-8 w-16 border rounded bg-gray-200 hover:bg-gray-300 border-gray-200"
+            defaultValue={baslikToView.current_page - 1}
+          >
+            {Array.from(Array(baslikToView.total_page).keys()).map((page) => (
+              <option key={page} value={page}>
+                {page + 1}
+              </option>
+            ))}
+          </select>
 
           <p>/</p>
           <button
             onClick={lastPageClick}
-            className="border border-gray-300 hover:bg-gray-200 w-8 rounded"
+            className="h-8 w-12 border border-gray-200 hover:bg-gray-200 rounded"
           >
             {baslikToView.total_page}
           </button>
           {baslikToView.current_page < baslikToView.total_page && (
             <button
-              className="border border-gray-200 w-10 rounded hover:bg-gray-200"
               onClick={handleNextClick}
+              className="h-8 w-12 border border-gray-200 hover:bg-gray-200 rounded"
             >
               <DoubleRightOutlined />
             </button>
@@ -253,17 +288,22 @@ const Content = ({
       </div>
 
       {mainPage.total_page > baslikToView.total_page && (
-        <div className=" flex justify-center  items-center w-full ">
+        <div className="flex justify-center  items-center w-full ">
           <button
             onClick={handleMore}
-            className="px-20 hover:bg-gray-300 border border-gray-400 rounded"
+            className="px-20 w-full m-2 hover:bg-gray-300 border border-gray-400 rounded"
           >
             {mainPage.total_page - baslikToView.total_page} sayfa daha
           </button>
         </div>
       )}
 
-      <Entry baslikToView={baslikToView} />
+      <Entry
+        setMainPage={setMainPage}
+        setIsLoading={setIsLoading}
+        setBaslikToView={setBaslikToView}
+        baslikToView={baslikToView}
+      />
     </div>
   );
 };

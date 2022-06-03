@@ -37,19 +37,26 @@ export default function LeftBar({
       `https://ekssi.herokuapp.com/api/baslik${slug}`
     );
 
-    setBaslikToView(res.data);
+    if (res.data.entries !== null) {
+      setBaslikToView(res.data);
+    }
 
     const res2 = await axios.get(`https://ekssi.herokuapp.com/api/basliklar`);
-    setBasliklar(res2.data);
+
+    if (res2.data.entries !== null) {
+      setBasliklar(res2.data);
+    }
 
     let tempSlug = slug.substring(0, slug.length - 10);
     const res3 = await axios.get(
       `https://ekssi.herokuapp.com/api/baslik${tempSlug}`
     );
-    setMainPage(res3.data);
-    // const res3 = await axios.get(
-    //   `https://ekssi.herokuapp.com/api/baslik${slug}`
-    // );
+    if (res3.data.entries !== null) {
+      setMainPage(res3.data);
+      // const res3 = await axios.get(
+      //   `https://ekssi.herokuapp.com/api/baslik${slug}`
+      // );
+    }
 
     setIsLoading(false);
   };
@@ -58,7 +65,6 @@ export default function LeftBar({
     <div className="h-screen sticky top-0">
       <h2 className="font-bold text-center">başlıklar</h2>
       <List
-        className="sticky"
         sx={{
           width: "100%",
           maxWidth: 360,

@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 // import Services from "../utils/Services";
 import axios from "axios";
 import Container from "@mui/material/Container";
+import Loading from "../components/Loading";
 
 function Home() {
   const [basliklar, setBasliklar] = useState([]);
@@ -37,8 +38,10 @@ function Home() {
 
       <Container className="container">
         <Header
+          setMainPage={setMainPage}
           setIsLoading={setIsLoading}
           setBaslikToView={setBaslikToView}
+          setIsMoreClicked={setIsMoreClicked}
         ></Header>
 
         <div className="flex">
@@ -58,6 +61,7 @@ function Home() {
           {/* ) : ()} */}
           {!isLoading ? (
             <Content
+              setMainPage={setMainPage}
               setBaslikToView={setBaslikToView}
               mainPage={mainPage}
               setIsLoading={setIsLoading}
@@ -70,9 +74,7 @@ function Home() {
               isMoreClicked={isMoreClicked}
             ></Content>
           ) : (
-            <div className="w-full text-xl shadow-lg justify-center text-center">
-              Is Loading...
-            </div>
+            <Loading />
           )}
         </div>
       </Container>

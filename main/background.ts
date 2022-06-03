@@ -16,9 +16,12 @@ if (isProd) {
   const mainWindow = createWindow("main", {
     width: 1000,
     height: 600,
+    webPreferences: {
+      minimumFontSize: 12,
+      defaultFontSize: 14,
+    },
   });
   // remove menu bar
-  mainWindow.setMenu(null);
 
   if (isProd) {
     await mainWindow.loadURL("app://./home.html");
