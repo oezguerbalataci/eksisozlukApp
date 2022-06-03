@@ -7,5 +7,4 @@ an unofficial Api.
 
 ### Usage:
 
-- There is an AppImage (for linux) and an Exe (for Windowsx64)
 - To build it yourself: `yarn run build` in the root repository
