@@ -7,7 +7,6 @@ import {
   DoubleRightOutlined,
   RedditSquareFilled,
 } from "@ant-design/icons";
-import { ipcRenderer } from "electron/renderer";
 
 const Content = ({
   isMoreClicked,
