@@ -1,3 +1,5 @@
+// @ts-ignore
+
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
@@ -20,6 +22,9 @@ const Content = ({
   bugunClicked,
   setBugunClicked,
   mainPage,
+  user,
+  uu1,
+  uu2,
 }) => {
   const [selected, setSelected] = useState(0);
   const handleMore = () => {
@@ -298,10 +303,13 @@ const Content = ({
       )}
 
       <Entry
+        user={user}
         setMainPage={setMainPage}
         setIsLoading={setIsLoading}
         setBaslikToView={setBaslikToView}
         baslikToView={baslikToView}
+        uu1={uu1}
+        uu2={uu2}
       />
     </div>
   );

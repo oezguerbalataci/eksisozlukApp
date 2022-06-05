@@ -9,9 +9,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Container from "@mui/material/Container";
 import Loading from "../components/Loading";
+import Login from "../components/Login";
+
+import { v1 as uuidv1 } from "uuid";
 
 function Home() {
   const [basliklar, setBasliklar] = useState([]);
+  const [uu1, setUu1] = useState(uuidv1());
+  const [uu2, setUu2] = useState(uuidv1());
   const [isLoading, setIsLoading] = useState(true);
   const [baslikToView, setBaslikToView] = useState(null);
   const [pageCount, setPageCount] = useState(0);
@@ -19,6 +24,8 @@ function Home() {
   const [bugunClicked, setBugunClicked] = useState(false);
   const [mainPage, setMainPage] = useState(null);
   const [isMoreClicked, setIsMoreClicked] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,10 +45,14 @@ function Home() {
 
       <Container className="container">
         <Header
+          user={user}
+          setUser={setUser}
           setMainPage={setMainPage}
           setIsLoading={setIsLoading}
           setBaslikToView={setBaslikToView}
           setIsMoreClicked={setIsMoreClicked}
+          uu1={uu1}
+          uu2={uu2}
         ></Header>
 
         <div className="flex">
@@ -61,6 +72,8 @@ function Home() {
           {/* ) : ()} */}
           {!isLoading ? (
             <Content
+              uu1={uu1}
+              uu2={uu2}
               setMainPage={setMainPage}
               setBaslikToView={setBaslikToView}
               mainPage={mainPage}
@@ -72,6 +85,7 @@ function Home() {
               setBugunClicked={setBugunClicked}
               setIsMoreClicked={setIsMoreClicked}
               isMoreClicked={isMoreClicked}
+              user={user}
             ></Content>
           ) : (
             <Loading />
